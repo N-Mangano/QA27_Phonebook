@@ -1,5 +1,7 @@
 package com.phonebook.tests;
 
+import com.phonebook.models.Contact;
+import com.phonebook.models.User;
 import org.testng.Assert;
 import org.testng.annotations.BeforeMethod;
 import org.testng.annotations.Test;
@@ -7,33 +9,42 @@ import org.testng.annotations.Test;
 public class RemoveContactTests extends TestBase{
   @BeforeMethod
   public void ensurePrecondition() {
-    if (!isLoginLinkPresent()) {
-      clickOnSignOutButton();
+    if (!app.getUser().isLoginLinkPresent()) {
+      app.getUser().clickOnSignOutButton();
     }
     //click on login link
-    clickOnLoginLink();
+    app.getUser().clickOnLoginLink();
     //enter email
     //email -> By.name
-    fillLoginRegisterForm("laurin@gmail.com", "Laurin1234$");
+    app.getUser().fillLoginRegisterForm(new User()
+        .setEmail("laurin@gmail.com")
+        .setPassword("Laurin1234$"));
     //click on Login button
-    clickOnLoginButton();
+    app.getUser().clickOnLoginButton();
     //click on Link add
-    clickOnAddLink();
+    app.getContact().clickOnAddLink();
     //enter firstname
-    fillAddContactForm("Karl", "Adam", "1234567890", "adam@gm.com", "Koblenz", "goalkeeper");
+    app.getContact().fillAddContactForm(
+        new Contact()
+            .setName("Karl")
+            .setLastname("Adam")
+            .setPhone("1234567890")
+            .setEmail("adam@gm.com")
+            .setAddress("Koblenz")
+            .setDescription("goalkeeper"));
     //click on save button
-    clickOnSaveButton();
+    app.getContact().clickOnSaveButton();
   }
 
   @Test
   public void removeContactPositiveTest() {
     //get size of contacts before remove
-    int sizeBefore = sizeOfContacts();
+    int sizeBefore = app.getContact().sizeOfContacts();
     //click on contact
-    removeContact();
-    pause(1000);
+    app.getContact().removeContact();
+    app.getContact().pause(1000);
     //get size of contacts after remove
-    int sizeAfter = sizeOfContacts();
+    int sizeAfter = app.getContact().sizeOfContacts();
     //assert by number of contacts
     Assert.assertEquals(sizeAfter, sizeBefore-1);
 
